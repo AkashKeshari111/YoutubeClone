@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body{
+        background-color: black;
+        margin: auto;
+    }
+
+    #search_div{
+        display: flex;
+        align-items: center;
+        background-color: red;
+    }
+
+    #search_div>h2{
+        /* margin-top: -2px; */
+        margin-right: 45px;
+        margin-left: 20px;
+        color: white;
+    }
+
+   #search{
+       width:600px;
+       height:35px;
+       border-right: none;
+       font-size: 18px;
+   }
+   #btn1{
+       height:34px;
+       border: 2px solid black;
+   }
+
+   #movie_div{
+       display: grid;
+       grid-template-columns: repeat(4,1fr);
+       grid-template-rows: repeat(auto,500px);
+       gap:15px;
+       margin-top: 10px;
+       margin-left: 10px;
+       margin-right: 10px;
+     
+   }
+   #movie_div>div{
+    border: 2px solid rgb(221, 216, 216);
+       text-align: center;
+       font-family: sans-serif;
+       overflow: hidden;
+       color: white;
+       box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+       border-radius: 7px;
+    }
+   #iframe{
+       width: 100%;
+       height: 65%;
+       border: 1px solid black;
+   }
+
+   #title{
+       font-size: 14px;
+       
+      padding-bottom: 5px;
+      padding-left: 5px;
+      padding-right: 5px;
+   }
+
+   @media screen and (min-width: 600px) and (max-width:820px){
+    #search{
+       width:350px;
+       height:33px;
+       border-right: none;
+       font-size: 16px;
+   }
+   #movie_div{
+       grid-template-columns: repeat(3,1fr);
+   }
+   }
+   @media screen and (min-width: 420px) and (max-width:600px){
+    #search{
+       width:350px;
+       height:35px;
+       border-right: none;
+       font-size: 18px;
+   }
+   #movie_div{
+       grid-template-columns: repeat(3,1fr);
+   }
+   }
+   @media screen and (min-width: 281px) and (max-width:420px){
+    #search{
+       width:170px;
+       height:35px;
+       border-right: none;
+       font-size: 18px;
+       margin-left: -25px;
+   }
+   #movie_div{
+       grid-template-columns: repeat(2,1fr);
+   }
+   }
+   @media screen and (min-width: 50px) and (max-width:281px){
+    #search{
+       width:90px;
+       height:35px;
+       border-right: none;
+       font-size: 18px;
+       margin-left: -25px;
+   }
+   #movie_div{
+       grid-template-columns: repeat(1,1fr);
+   }
+   }
+
+</style>
+<body>
+    <div id="search_div">
+        <h2>You Tube Premium</h2>
+        <input id="search" type="search">
+        <button id="btn1" onclick="searchvideos()">search</button>
+    </div>
+
+    <div id="movie_div"></div>
+</body>
+</html>
+
+<script>
+
+    // https://youtube.googleapis.com/youtube/v3/videos?part=snippet&maxResults=30&myRating=like&key=[YOUR_API_KEY] 
+
+
+//url= https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&q=kgf%202&key=[Api key]
+
+//api key=AIzaSyCvKtQPCpkQvvk1rR3rikqmlrH4VB7SEC0
+
+const searchvideos=async ()=>{
+    try{
+    const search=document.getElementById("search").value
+
+const apikey="AIzaSyCvKtQPCpkQvvk1rR3rikqmlrH4VB7SEC0"
+const res=await fetch(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${search}%202&key=${apikey}`)
+const data=await res.json();
+console.log(data.items)
+append(data.items)
+
+}
+catch(err){
+    console.log(err)
+}
+
+}
+var movie_div
+const append=(datacatch)=>{
+ movie_div=document.getElementById("movie_div")
+movie_div.innerHTML=null
+datacatch.forEach(({id:{videoId},snippet:{title}})=>{
+    const objVideo={
+        videoId,
+        title,
+    }
+    
+    let div= document.createElement("div")
+    div.onclick=()=>{
+        showvideo(objVideo)
+    }
+
+    
+    let iframe=document.createElement("iframe")
+    iframe.src=`https://www.youtube.com/embed/${videoId}`
+    iframe.allow="fullscreen"
+    iframe.id="iframe"
+    
+    let Title=document.createElement("h4")
+    Title.innerText=title
+    Title.id="title"
+   
+    
+    div.append(iframe,Title)
+    movie_div.append(div)
+
+
+});
+}
+
+
+var obj=JSON.parse(localStorage.getItem("clickvideo"))
+const showvideo=(video)=>{
+    window.location.href="video.html"
+    
+    localStorage.setItem("clickvideo",JSON.stringify(video))
+}
+//https://youtube.googleapis.com/youtube/v3/videos?part=snippet&maxResults=30&myRating=like&key=[YOUR_API_KEY] HTTP/1.1
+
+ //https://youtube.googleapis.com/youtube/v3/videos?part=snippet&myRating=like&key=AIzaSyA4DLYr1x6XKsll4TjJ3Z6s3Y6i_i1bFaU
+
+
+const url= "https://www.googleapis.com/youtube/v3/videos?part=contentDetails&chart=mostPopular&regionCode=IN&maxResults=25&key=AIzaSyCvKtQPCpkQvvk1rR3rikqmlrH4VB7SEC0"
+
+fetch(url)
+.then(function(res){
+    return res.json()
+})
+.then(function(res){
+    console.log(res.items)
+    trend(res.items)
+})
+.catch(function(err){
+    console.log(err)
+})
+
+function trend(data){
+     movie_div=document.getElementById("movie_div")
+
+    data.forEach(({id:{id}})=>{
+
+    
+        let div= document.createElement("div")
+        let iframe=document.createElement("iframe")
+      
+    iframe.src=`https://www.youtube.com/embed/${id}`
+    iframe.allow="fullscreen"
+    iframe.id="iframe"
+
+    div.append(iframe)
+
+    movie_div.append(div)
+    })
+}
+
+
+
+//  <iframe width="560" height="315" 
+// src="https://www.youtube.com/embed/rJQTGd2ljVU"
+//  title="YouTube video player"
+//   frameborder="0" 
+//   allow="accelerometer;
+//    autoplay; clipboard-write; encrypted-media; gyroscope;
+//     picture-in-picture" allowfullscreen></iframe>
+
+</script>
+
+
+
